@@ -19,7 +19,7 @@ class Contact extends Component<IContactProps, IContactState> {
     this.setState({ showContactInfo: !this.state.showContactInfo });
   };
 
-  onDeleteClick = (id: number, dispatch: AppContextDispatch) => {
+  onDeleteClick = (id: string, dispatch: AppContextDispatch) => {
     dispatch({ type: "DELETE_CONTACT", payload: id });
   };
 
