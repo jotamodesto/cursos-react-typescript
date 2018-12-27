@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Contact from "./Contact";
-import { Consumer } from "../context";
-import { ContactType } from "../Types";
+import { Consumer } from "../../context";
+import { ContactType } from "../../Types";
 
 interface IContactsState {
   contacts: Array<ContactType>;

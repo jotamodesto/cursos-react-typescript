@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Consumer, AppContextDispatch } from "../context";
-import { ContactType } from "../Types";
+import { Consumer, AppContextDispatch } from "../../context";
+import { ContactType } from "../../Types";
 // import PropTypes from "prop-types";
 
 interface IContactProps {
@@ -43,7 +43,7 @@ class Contact extends Component<IContactProps, IContactState> {
                 <i
                   className="fas fa-times"
                   style={{ cursor: "pointer", float: "right", color: "red" }}
-                  onClick={this.onDeleteClick.bind(this, id, dispatch)}
+                  onClick={() => this.onDeleteClick(id, dispatch)}
                 />
               </h4>
               {showContactInfo ? (
