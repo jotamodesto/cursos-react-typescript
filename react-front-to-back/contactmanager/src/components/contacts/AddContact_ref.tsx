@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { ContactType } from "../../Types";
+import { IContact } from "../../Types";
 
-export class AddContact extends Component<ContactType> {
+export class AddContact extends Component<IContact> {
   private nameInput = React.createRef<HTMLInputElement>();
   private emailInput = React.createRef<HTMLInputElement>();
   private phoneInput = React.createRef<HTMLInputElement>();

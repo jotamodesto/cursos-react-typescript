@@ -1,16 +1,31 @@
 import React, { Component } from "react";
-import axios from "axios";
 import { RouteComponentProps } from "react-router-dom";
+import axios from "axios";
 import { Consumer, AppContextDispatch } from "../../context";
 import TextInputGroup from "../layout/TextInputGroup";
 
-class AddContact extends Component<RouteComponentProps> {
+class EditContact extends Component<RouteComponentProps<{ id: string }>> {
   state = {
     name: "",
     email: "",
     phone: "",
     errors: { name: "", email: "", phone: "" }
   };
+
+  async componentDidMount() {
+    const { id } = this.props.match.params;
+    const res = await axios.get(
+      `https://jsonplaceholder.typicode.com/users/${id}`
+    );
+
+    const contact = res.data;
+
+    this.setState({
+      name: contact.name,
+      email: contact.email,
+      phone: contact.phone
+    });
+  }
 
   onChange = (e: React.SyntheticEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
@@ -35,13 +50,20 @@ class AddContact extends Component<RouteComponentProps> {
       return;
     }
 
-    const newContact = { name, email, phone };
+    const updContact = {
+      name,
+      email,
+      phone
+    };
 
-    const res = await axios.post(
-      "https://jsonplaceholder.typicode.com/users",
-      newContact
+    const { id } = this.props.match.params;
+
+    const res = await axios.put(
+      `https://jsonplaceholder.typicode.com/users/${id}`,
+      updContact
     );
-    dispatch({ type: "ADD_CONTACT", payload: res.data });
+
+    dispatch({ type: "UPDATE_CONTACT", payload: res.data });
 
     // Clear State
     this.setState({ name: "", email: "", phone: "", errors: {} });
@@ -57,7 +79,7 @@ class AddContact extends Component<RouteComponentProps> {
           const { dispatch } = value;
           return (
             <div className="card mb-3">
-              <div className="card-header">Add Contact</div>
+              <div className="card-header">Edit Contact</div>
               <div className="card-body">
                 <form onSubmit={this.onSubmit.bind(this, dispatch)}>
                   <TextInputGroup
@@ -87,7 +109,7 @@ class AddContact extends Component<RouteComponentProps> {
                   />
                   <input
                     type="submit"
-                    value="Add Contact"
+                    value="Update Contact"
                     className="btn btn-light btn-block"
                   />
                 </form>
@@ -100,4 +122,4 @@ class AddContact extends Component<RouteComponentProps> {
   }
 }
 
-export default AddContact;
+export default EditContact;

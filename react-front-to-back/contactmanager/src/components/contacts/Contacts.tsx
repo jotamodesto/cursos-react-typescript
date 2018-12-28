@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import Contact from "./Contact";
 import { Consumer } from "../../context";
-import { ContactType } from "../../Types";
+import { IContact } from "../../Types";
 
 interface IContactsState {
-  contacts: Array<ContactType>;
+  contacts: Array<IContact>;
 }
 
 export class Contacts extends Component<{}, IContactsState> {
