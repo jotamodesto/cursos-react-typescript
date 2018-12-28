@@ -1,9 +1,10 @@
 import React, { Component } from "react";
+import { RouteComponentProps } from "react-router-dom";
 import { Consumer, AppContextDispatch } from "../../context";
 import TextInputGroup from "../layout/TextInputGroup";
 import uuid from "uuid";
 
-export class AddContact extends Component {
+export class AddContact extends Component<RouteComponentProps> {
   state = {
     name: "",
     email: "",
@@ -40,6 +41,8 @@ export class AddContact extends Component {
 
     // Clear State
     this.setState({ name: "", email: "", phone: "", errors: {} });
+
+    this.props.history.push("/");
   };
 
   render() {
