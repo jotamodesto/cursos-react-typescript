@@ -1,35 +1,50 @@
-import { IContactState } from "../actions/types";
+import {
+  ContactState,
+  ContactActionTypes,
+  ContactActions
+} from "../types/contactTypes";
 
-const initialState: IContactState = {
-  contacts: [
-    {
-      id: "1",
-      name: "John Doe",
-      email: "john@gmail.com",
-      phone: "555-555-5555"
-    },
-    {
-      id: "2",
-      name: "Karen Williams",
-      email: "karen@gmail.com",
-      phone: "444-444-4444"
-    },
-    {
-      id: "3",
-      name: "Henry Johnson",
-      email: "henry@gmail.com",
-      phone: "333-333-333"
-    }
-  ]
+const initialState: ContactState = {
+  contacts: [],
+  contact: { id: "", name: "", email: "", phone: "" }
 };
 
-export default function contactReducer(
-  state: IContactState = initialState,
-  action: any
-): IContactState {
+export default function(
+  state = initialState,
+  action: ContactActionTypes
+): ContactState {
   switch (action.type) {
-    // case GET_CONTACTS:
-    //   return { ...state };
+    case ContactActions.GET_CONTACTS:
+      return {
+        ...state,
+        contacts: action.payload
+      };
+    case ContactActions.GET_CONTACT:
+      return {
+        ...state,
+        contact: action.payload
+      };
+    case ContactActions.DELETE_CONTACT:
+      return {
+        ...state,
+        contacts: state.contacts.filter(
+          contact => contact.id !== action.payload
+        )
+      };
+    case ContactActions.ADD_CONTACT:
+      return {
+        ...state,
+        contacts: [action.payload, ...state.contacts]
+      };
+    case ContactActions.UPDATE_CONTACT:
+      return {
+        ...state,
+        contacts: state.contacts.map(contact =>
+          contact.id === action.payload.id
+            ? (contact = action.payload)
+            : contact
+        )
+      };
     default:
       return state;
   }

@@ -1,16 +1,16 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
 import axios from "axios";
-import { IContact } from "../../reducers/contactReducer";
+import { Contact as ContactType } from "../../types/contactTypes";
+import { thunkDeleteContact } from "../../actions/contactActions";
 
-interface IContactProps {
-  contact: IContact;
-}
-interface IContactState {
-  showContactInfo: boolean;
+interface ContactProps {
+  contact: ContactType;
+  thunkDeleteContact: any;
 }
 
-class Contact extends Component<IContactProps, IContactState> {
+class Contact extends Component<ContactProps> {
   state = {
     showContactInfo: false
   };
@@ -20,7 +20,7 @@ class Contact extends Component<IContactProps, IContactState> {
   };
 
   onDeleteClick = async (id: string) => {
-    //// DELETE CONTACT ////
+    this.props.thunkDeleteContact(id);
   };
 
   render() {
@@ -71,4 +71,7 @@ class Contact extends Component<IContactProps, IContactState> {
 //   phone: PropTypes.string.isRequired
 // };
 
-export default Contact;
+export default connect(
+  null,
+  { thunkDeleteContact }
+)(Contact);

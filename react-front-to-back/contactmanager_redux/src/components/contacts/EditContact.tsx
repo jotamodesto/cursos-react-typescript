@@ -1,9 +1,19 @@
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import axios from "axios";
-import TextInputGroup from "../layout/TextInputGroup";
+import { connect } from "react-redux";
 
-class EditContact extends Component<RouteComponentProps<{ id: string }>> {
+import TextInputGroup from "../layout/TextInputGroup";
+import { Contact } from "../../types/contactTypes";
+import { getContact, updateContact } from "../../actions/contactActions";
+import { AppState } from "../../reducers";
+
+interface EditContactProps extends RouteComponentProps<{ id: string }> {
+  contact: Contact;
+  getContact: any;
+  updateContact: any;
+}
+
+class EditContact extends Component<EditContactProps> {
   state = {
     name: "",
     email: "",
@@ -11,12 +21,26 @@ class EditContact extends Component<RouteComponentProps<{ id: string }>> {
     errors: { name: "", email: "", phone: "" }
   };
 
+  componentWillReceiveProps(nextProps: EditContactProps, nextState: any) {
+    const { name, email, phone } = nextProps.contact;
+    this.setState({
+      name,
+      email,
+      phone
+    });
+  }
+
+  componentDidMount() {
+    const { id } = this.props.match.params;
+    this.props.getContact(id);
+  }
+
   onChange = (e: React.SyntheticEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
     this.setState({ [target.name]: target.value });
   };
 
-  onSubmit = async (e: React.SyntheticEvent) => {
+  onSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
     const { name, email, phone } = this.state;
 
@@ -34,15 +58,16 @@ class EditContact extends Component<RouteComponentProps<{ id: string }>> {
       return;
     }
 
+    const { id } = this.props.match.params;
+
     const updContact = {
+      id,
       name,
       email,
       phone
     };
 
-    const { id } = this.props.match.params;
-
-    //// UPDATE CONTACT ////
+    this.props.updateContact(updContact);
 
     // Clear State
     this.setState({ name: "", email: "", phone: "", errors: {} });
@@ -95,4 +120,11 @@ class EditContact extends Component<RouteComponentProps<{ id: string }>> {
   }
 }
 
-export default EditContact;
+const mapStateToProps = (state: AppState) => ({
+  contact: state.contact.contact
+});
+
+export default connect(
+  mapStateToProps,
+  { getContact, updateContact }
+)(EditContact);

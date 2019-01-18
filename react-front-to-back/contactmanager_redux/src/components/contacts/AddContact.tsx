@@ -1,9 +1,15 @@
 import React, { Component } from "react";
-import axios from "axios";
 import { RouteComponentProps } from "react-router-dom";
+import { connect } from "react-redux";
+
+import { addContact } from "../../actions/contactActions";
 import TextInputGroup from "../layout/TextInputGroup";
 
-class AddContact extends Component<RouteComponentProps> {
+interface AddContactProps extends RouteComponentProps {
+  addContact: any;
+}
+
+class AddContact extends Component<AddContactProps> {
   state = {
     name: "",
     email: "",
@@ -16,7 +22,7 @@ class AddContact extends Component<RouteComponentProps> {
     this.setState({ [target.name]: target.value });
   };
 
-  onSubmit = async (e: React.SyntheticEvent) => {
+  onSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
     const { name, email, phone } = this.state;
 
@@ -36,7 +42,7 @@ class AddContact extends Component<RouteComponentProps> {
 
     const newContact = { name, email, phone };
 
-    //// SUBMIT CONTACT ////
+    this.props.addContact(newContact);
 
     // Clear State
     this.setState({ name: "", email: "", phone: "", errors: {} });
@@ -89,4 +95,7 @@ class AddContact extends Component<RouteComponentProps> {
   }
 }
 
-export default AddContact;
+export default connect(
+  null,
+  { addContact }
+)(AddContact);

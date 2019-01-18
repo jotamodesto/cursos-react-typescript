@@ -1,18 +1,22 @@
 import React, { Component } from "react";
-import { connect, MapDispatchToProps } from "react-redux";
+import { connect } from "react-redux";
 
+import { AppState } from "../../reducers";
 import Contact from "./Contact";
-import { IRootState } from "../../reducers";
-import { IContact } from "../../actions/types";
 
-const mapStateToProps = ({ contact }: IRootState) => {
-  const { contacts } = contact;
-  return { contacts };
-};
+import { Contact as ContactType } from "../../types/contactTypes";
+import { getContacts } from "../../actions/contactActions";
 
-type ContactType = ReturnType<typeof mapStateToProps>;
+interface ContactProps {
+  contacts: ContactType[];
+  getContacts: any;
+}
 
-export class Contacts extends Component<ContactType> {
+class Contacts extends Component<ContactProps> {
+  componentDidMount() {
+    this.props.getContacts();
+  }
+
   render() {
     const { contacts } = this.props;
     return (
@@ -28,13 +32,11 @@ export class Contacts extends Component<ContactType> {
   }
 }
 
-// const mapDispatchToProps = (dispatch: Dispatch): IDispatchFromProps => ({
-//   getContacts: () => dispatch()
-// });
+const mapStateToProps = (state: AppState) => ({
+  contacts: state.contact.contacts
+});
 
-// export default connect<IRootState, IDispatchFromProps>(
-//   mapStateToProps,
-//   mapDispatchToProps
-// )(Contacts);
-
-export default Contacts;
+export default connect(
+  mapStateToProps,
+  { getContacts }
+)(Contacts);

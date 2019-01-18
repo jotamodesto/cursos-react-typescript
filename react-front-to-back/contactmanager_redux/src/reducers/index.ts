@@ -1,11 +1,10 @@
 import { combineReducers } from "redux";
 import contactReducer from "./contactReducer";
-import { IContactState } from "../actions/types";
 
-export interface IRootState {
-  contact: IContactState;
-}
-
-export default combineReducers({
+const rootReducer = combineReducers({
   contact: contactReducer
 });
+
+export type AppState = ReturnType<typeof rootReducer>;
+
+export default rootReducer;
