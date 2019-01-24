@@ -1,20 +1,36 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import { firestoreConnect } from 'react-redux-firebase';
+import React, { Component } from "react";
+import { Link, RouteComponentProps } from "react-router-dom";
+import PropTypes from "prop-types";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { firestoreConnect } from "react-redux-firebase";
 
-class AddClient extends Component {
+import { Client } from "./ClientTypes";
+
+interface AddClientProps {
+  firestore: any;
+}
+type AddClientPropType = AddClientProps & RouteComponentProps;
+
+interface AddClientState {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  balance: string;
+  [propName: string]: string;
+}
+
+class AddClient extends Component<AddClientPropType, AddClientState> {
   state = {
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    balance: ''
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    balance: ""
   };
 
-  onSubmit = e => {
+  onSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
 
     const newClient = this.state;
@@ -22,20 +38,19 @@ class AddClient extends Component {
     const { firestore, history } = this.props;
 
     // If no balance, make 0
-    if (newClient.balance === '') {
-      newClient.balance = 0;
+    if (newClient.balance === "") {
+      newClient.balance = "0";
     }
 
     firestore
-      .add({ collection: 'clients' }, newClient)
-      .then(() => history.push('/'));
+      .add({ collection: "clients" }, newClient)
+      .then(() => history.push("/"));
   };
 
-  onChange = e => this.setState({ [e.target.name]: e.target.value });
+  onChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    this.setState({ [e.target.name]: e.target.value });
 
   render() {
-    const { disableBalanceOnAdd } = this.props.settings;
-
     return (
       <div>
         <div className="row">
@@ -56,7 +71,7 @@ class AddClient extends Component {
                   type="text"
                   className="form-control"
                   name="firstName"
-                  minLength="2"
+                  minLength={2}
                   required
                   onChange={this.onChange}
                   value={this.state.firstName}
@@ -69,7 +84,7 @@ class AddClient extends Component {
                   type="text"
                   className="form-control"
                   name="lastName"
-                  minLength="2"
+                  minLength={2}
                   required
                   onChange={this.onChange}
                   value={this.state.lastName}
@@ -93,7 +108,7 @@ class AddClient extends Component {
                   type="text"
                   className="form-control"
                   name="phone"
-                  minLength="10"
+                  minLength={10}
                   required
                   onChange={this.onChange}
                   value={this.state.phone}
@@ -108,7 +123,6 @@ class AddClient extends Component {
                   name="balance"
                   onChange={this.onChange}
                   value={this.state.balance}
-                  disabled={disableBalanceOnAdd}
                 />
               </div>
 
@@ -125,14 +139,7 @@ class AddClient extends Component {
   }
 }
 
-AddClient.propTypes = {
-  firestore: PropTypes.object.isRequired,
-  settings: PropTypes.object.isRequired
-};
-
-export default compose(
+export default compose<React.ComponentClass>(
   firestoreConnect(),
-  connect((state, props) => ({
-    settings: state.settings
-  }))
+  connect((state, props) => ({}))
 )(AddClient);

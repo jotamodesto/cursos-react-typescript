@@ -1,37 +1,42 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import React, { Component, RefObject } from "react";
+import { Link, RouteComponentProps } from "react-router-dom";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { firestoreConnect } from "react-redux-firebase";
+
 import Spinner from "../layout/Spinner";
+import { Client } from "./ClientTypes";
 
-class EditClient extends Component {
-  constructor(props) {
-    super(props);
-    // Create refs
-    this.firstNameInput = React.createRef();
-    this.lastNameInput = React.createRef();
-    this.emailInput = React.createRef();
-    this.phoneInput = React.createRef();
-    this.balanceInput = React.createRef();
-  }
+interface EditClientProps {
+  client: Client;
+  firestore: any;
+}
+type EditClientRouteProps = EditClientProps &
+  RouteComponentProps<{ id: string }>;
 
-  onSubmit = e => {
+class EditClient extends Component<EditClientRouteProps> {
+  private firstNameInput = React.createRef<HTMLInputElement>();
+  private lastNameInput = React.createRef<HTMLInputElement>();
+  private emailInput = React.createRef<HTMLInputElement>();
+  private phoneInput = React.createRef<HTMLInputElement>();
+  private balanceInput = React.createRef<HTMLInputElement>();
+
+  onSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
 
     const { client, firestore, history } = this.props;
 
     // Updated Client
     const updClient = {
-      firstName: this.firstNameInput.current.value,
-      lastName: this.lastNameInput.current.value,
-      email: this.emailInput.current.value,
-      phone: this.phoneInput.current.value,
+      firstName: this.firstNameInput.current!.value,
+      lastName: this.lastNameInput.current!.value,
+      email: this.emailInput.current!.value,
+      phone: this.phoneInput.current!.value,
       balance:
-        this.balanceInput.current.value === ""
+        this.balanceInput.current!.value === ""
           ? 0
-          : this.balanceInput.current.value
+          : this.balanceInput.current!.value
     };
 
     // Update client in firestore
@@ -64,7 +69,7 @@ class EditClient extends Component {
                     type="text"
                     className="form-control"
                     name="firstName"
-                    minLength="2"
+                    minLength={2}
                     required
                     ref={this.firstNameInput}
                     defaultValue={client.firstName}
@@ -77,7 +82,7 @@ class EditClient extends Component {
                     type="text"
                     className="form-control"
                     name="lastName"
-                    minLength="2"
+                    minLength={2}
                     required
                     ref={this.lastNameInput}
                     defaultValue={client.lastName}
@@ -101,7 +106,7 @@ class EditClient extends Component {
                     type="text"
                     className="form-control"
                     name="phone"
-                    minLength="10"
+                    minLength={10}
                     required
                     ref={this.phoneInput}
                     defaultValue={client.phone}
@@ -115,7 +120,7 @@ class EditClient extends Component {
                     className="form-control"
                     name="balance"
                     ref={this.balanceInput}
-                    defaultValue={client.balance}
+                    defaultValue={client.balance.toString()}
                   />
                 </div>
 
@@ -135,16 +140,11 @@ class EditClient extends Component {
   }
 }
 
-EditClient.propTypes = {
-  firestore: PropTypes.object.isRequired
-};
-
-export default compose(
-  firestoreConnect(props => [
+export default compose<React.ComponentClass>(
+  firestoreConnect((props: EditClientRouteProps) => [
     { collection: "clients", storeAs: "client", doc: props.match.params.id }
   ]),
-  connect(({ firestore: { ordered }, settings }, props) => ({
-    client: ordered.client && ordered.client[0],
-    settings
+  connect(({ firestore: { ordered } }: any, props) => ({
+    client: ordered.client && ordered.client[0]
   }))
 )(EditClient);

@@ -1,13 +1,11 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { firebaseConnect } from "react-redux-firebase";
 
 class AppNavbar extends Component {
-  static getDerivedStateFromProps(props, state) {}
-
+  //static getDerivedStateFromProps(props, state) {}
   render() {
     return (
       <nav className="navbar navbar-expand-md navbar-dark bg-primary mb-4">
@@ -38,11 +36,7 @@ class AppNavbar extends Component {
   }
 }
 
-AppNavbar.propTypes = {
-  firebase: PropTypes.object.isRequired
-};
-
-export default compose(
+export default compose<React.ComponentClass>(
   firebaseConnect(),
   connect((state, props) => ({}))
 )(AppNavbar);
