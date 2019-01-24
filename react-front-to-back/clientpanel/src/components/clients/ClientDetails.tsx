@@ -1,13 +1,12 @@
 import React, { Component } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
-import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { firestoreConnect } from "react-redux-firebase";
 import classnames from "classnames";
 
 import Spinner from "../layout/Spinner";
-import { Client } from "./ClientTypes";
+import { Client } from "../../types/ClientTypes";
 
 interface ClientDetailsProps {
   client: Client;

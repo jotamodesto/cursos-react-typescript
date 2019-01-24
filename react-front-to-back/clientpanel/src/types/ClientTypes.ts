@@ -6,3 +6,7 @@ export interface Client {
   phone: string;
   balance: string | number;
 }
+
+export enum ClientActions {
+  NOTIFY_USER
+}
