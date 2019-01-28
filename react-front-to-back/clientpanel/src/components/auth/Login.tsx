@@ -3,8 +3,14 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { firebaseConnect } from "react-redux-firebase";
 
+import Notify, { NotifyState } from "../../types/notifyTypes";
+import { notifyUser } from "../../actions/notifyActions";
+import Alert from "../layout/Alert";
+
 interface LoginProps {
   firebase: any;
+  notifyUser: typeof notifyUser;
+  notify: Notify;
 }
 
 interface LoginState {
@@ -22,7 +28,7 @@ class Login extends Component<LoginProps, LoginState> {
   onSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    const { firebase } = this.props;
+    const { firebase, notifyUser } = this.props;
     const { email, password } = this.state;
 
     firebase
@@ -30,18 +36,22 @@ class Login extends Component<LoginProps, LoginState> {
         email,
         password
       })
-      .catch((err: any) => alert("Invalid Login Credentials"));
+      .catch((err: any) => notifyUser("Invalid Login Credentials", "error"));
   };
 
   onChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     this.setState({ [e.target.name]: e.target.value });
 
   render() {
+    const { message, messageType } = this.props.notify;
     return (
       <div className="row">
         <div className="col-md-6 mx-auto">
           <div className="card">
             <div className="card-body">
+              {message ? (
+                <Alert message={message} messageType={messageType} />
+              ) : null}
               <h1 className="text-center pb-4 pt-3">
                 <span className="text-primary">
                   <i className="fas fa-lock" /> Login
@@ -84,4 +94,12 @@ class Login extends Component<LoginProps, LoginState> {
   }
 }
 
-export default firebaseConnect()(Login);
+export default compose<React.ComponentClass>(
+  firebaseConnect(),
+  connect(
+    (state: NotifyState, props) => ({
+      notify: state.notify
+    }),
+    { notifyUser }
+  )
+)(Login);

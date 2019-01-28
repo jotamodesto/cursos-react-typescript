@@ -3,15 +3,18 @@ import { Link } from "react-router-dom";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { firebaseConnect } from "react-redux-firebase";
+import Settings from "../../types/settingsTypes";
 
 interface AppNavbarProps {
   firebase: any;
   auth: any;
+  settings: Settings;
 }
 
 interface AppNavbarState {
   isAuthenticated: boolean;
   firebase?: any;
+  settings?: Settings;
 }
 
 class AppNavbar extends Component<AppNavbarProps, AppNavbarState> {
@@ -74,6 +77,11 @@ class AppNavbar extends Component<AppNavbarProps, AppNavbarState> {
                   </a>
                 </li>
                 <li className="nav-item">
+                  <Link to="/settings" className="nav-link">
+                    Settings
+                  </Link>
+                </li>
+                <li className="nav-item">
                   <a
                     href="#!"
                     className="nav-link"
@@ -94,6 +102,7 @@ class AppNavbar extends Component<AppNavbarProps, AppNavbarState> {
 export default compose<React.ComponentClass>(
   firebaseConnect(),
   connect((state: AppNavbarState, props) => ({
-    auth: state.firebase.auth
+    auth: state.firebase.auth,
+    settings: state.settings
   }))
 )(AppNavbar);

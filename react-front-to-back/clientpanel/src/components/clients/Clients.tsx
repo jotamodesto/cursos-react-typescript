@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { firestoreConnect } from "react-redux-firebase";
 
 import Spinner from "../layout/Spinner";
-import { Client } from "../../types/ClientTypes";
+import { Client } from "../../types/clientTypes";
 
 interface ClientsProps {
   clients: Client[];

@@ -1,11 +1,9 @@
 import React, { Component } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
-import PropTypes from "prop-types";
+
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { firestoreConnect } from "react-redux-firebase";
-
-import { Client } from "../../types/ClientTypes";
 
 interface AddClientProps {
   firestore: any;
