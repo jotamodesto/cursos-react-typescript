@@ -4,9 +4,11 @@ import { Link, RouteComponentProps } from "react-router-dom";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { firestoreConnect } from "react-redux-firebase";
+import Settings from "../../types/settingsTypes";
 
 interface AddClientProps {
   firestore: any;
+  settings: Settings;
 }
 type AddClientPropType = AddClientProps & RouteComponentProps;
 
@@ -16,7 +18,8 @@ interface AddClientState {
   email: string;
   phone: string;
   balance: string;
-  [propName: string]: string;
+  settings?: Settings;
+  [propName: string]: any;
 }
 
 class AddClient extends Component<AddClientPropType, AddClientState> {
@@ -49,6 +52,8 @@ class AddClient extends Component<AddClientPropType, AddClientState> {
     this.setState({ [e.target.name]: e.target.value });
 
   render() {
+    const { disableBalanceOnAdd } = this.props.settings;
+
     return (
       <div>
         <div className="row">
@@ -121,6 +126,7 @@ class AddClient extends Component<AddClientPropType, AddClientState> {
                   name="balance"
                   onChange={this.onChange}
                   value={this.state.balance}
+                  disabled={disableBalanceOnAdd}
                 />
               </div>
 
@@ -139,5 +145,7 @@ class AddClient extends Component<AddClientPropType, AddClientState> {
 
 export default compose<React.ComponentClass>(
   firestoreConnect(),
-  connect((state, props) => ({}))
+  connect((state: AddClientState, props) => ({
+    settings: state.settings
+  }))
 )(AddClient);

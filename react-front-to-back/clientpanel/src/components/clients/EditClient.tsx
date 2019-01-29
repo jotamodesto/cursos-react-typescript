@@ -7,10 +7,12 @@ import { firestoreConnect } from "react-redux-firebase";
 
 import Spinner from "../layout/Spinner";
 import { Client } from "../../types/clientTypes";
+import Settings from "../../types/settingsTypes";
 
 interface EditClientProps {
   client: Client;
   firestore: any;
+  settings: Settings;
 }
 type EditClientRouteProps = EditClientProps &
   RouteComponentProps<{ id: string }>;
@@ -47,6 +49,7 @@ class EditClient extends Component<EditClientRouteProps> {
 
   render() {
     const { client } = this.props;
+    const { disableBalanceOnEdit } = this.props.settings;
 
     if (client) {
       return (
@@ -121,6 +124,7 @@ class EditClient extends Component<EditClientRouteProps> {
                     name="balance"
                     ref={this.balanceInput}
                     defaultValue={client.balance.toString()}
+                    disabled={disableBalanceOnEdit}
                   />
                 </div>
 
@@ -144,7 +148,8 @@ export default compose<React.ComponentClass>(
   firestoreConnect((props: EditClientRouteProps) => [
     { collection: "clients", storeAs: "client", doc: props.match.params.id }
   ]),
-  connect(({ firestore: { ordered } }: any, props) => ({
-    client: ordered.client && ordered.client[0]
+  connect(({ firestore: { ordered }, settings }: any, props) => ({
+    client: ordered.client && ordered.client[0],
+    settings: settings
   }))
 )(EditClient);
