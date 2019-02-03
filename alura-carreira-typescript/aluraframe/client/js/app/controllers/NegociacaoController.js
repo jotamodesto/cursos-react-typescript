@@ -30,6 +30,18 @@ class NegociacaoController {
     this._limpaFormulario();
   }
 
+  importaNegociacoes() {
+    const service = new NegociacaoService();
+
+    service
+      .obterTodasNegociacoes()
+      .then(negociacoes => {
+        negociacoes.forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
+        this._mensagem.texto = "Todas as negociações do periodo foram importadas.";
+      })
+      .catch(erro => (this._mensagem.texto = erro));
+  }
+
   apaga() {
     this._listaNegociacoes.esvazia();
 
