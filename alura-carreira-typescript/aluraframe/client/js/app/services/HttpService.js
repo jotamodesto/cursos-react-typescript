@@ -1,3 +1,4 @@
+/* exported HttpService */
 class HttpService {
   get(url) {
     return new Promise((resolve, reject) => {
