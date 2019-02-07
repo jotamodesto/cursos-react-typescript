@@ -8,9 +8,9 @@
     "ecmaVersion": 2016
   },
   "rules": {
-    "indent": ["error", 2],
-    "linebreak-style": ["error", "windows"],
-    "quotes": ["error", "double"],
+    "indent": ["error", 3],
+    "linebreak-style": "off",
+    "quotes": ["error", "single"],
     "semi": ["error", "always"],
     "no-console": "off",
     "no-unused-vars": "warn"
