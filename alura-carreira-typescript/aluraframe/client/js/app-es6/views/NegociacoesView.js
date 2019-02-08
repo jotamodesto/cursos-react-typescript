@@ -1,10 +1,22 @@
-class NegociacoesView extends View {
-  constructor(elemento) {
-    super(elemento);
-  }
+import { View } from './View';
+import { DateHelper } from '../helpers/DateHelper';
+import NegociacaoController from '../controllers/NegociacaoController';
 
-  template(model) {
-    return `<table class="table table-hover table-bordered">
+export class NegociacoesView extends View {
+   constructor(elemento) {
+      super(elemento);
+
+      this.controller = NegociacaoController();
+      elemento.addEventListener('click', e => {
+         if (event.target.nodeName === 'TH') {
+            //this.controller.ordena(e.target.textContent.toLowerCase());
+            console.log(e.target.textContent);
+         }
+      });
+   }
+
+   template(model) {
+      return `<table class="table table-hover table-bordered">
         <thead>
           <tr>
             <th>DATA</th>
@@ -16,8 +28,8 @@ class NegociacoesView extends View {
   
         <tbody>
             ${model.negociacoes
-              .map(
-                n => `
+      .map(
+         n => `
                 <tr>
                     <td>${DateHelper.dataParaTexto(n.data)}</td>
                     <td>${n.quantidade}</td>
@@ -25,8 +37,8 @@ class NegociacoesView extends View {
                     <td>${n.volume}</td>
                 <tr>
                 `
-              )
-              .join("")}
+      )
+      .join('')}
         </tbody>
   
         <tfoot>
@@ -36,5 +48,5 @@ class NegociacoesView extends View {
             </td>
         </tfoot>
       </table>`;
-  }
+   }
 }
