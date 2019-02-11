@@ -1,6 +1,8 @@
 import { NegociacoesView, MensagemView } from "../views/index";
 import { Negociacoes, Negociacao, NegociacaoParcial } from "../models/index";
 import { domInject, throttle } from "../helpers/decorators/index";
+import { NegociacaoService, HandlerFunction } from "../services/index";
+import { imprime } from "../helpers/index";
 
 export class NegociacaoController {
   @domInject("#data")
@@ -12,6 +14,7 @@ export class NegociacaoController {
   private _negociacoes = new Negociacoes();
   private _negociacoesView = new NegociacoesView("#negociacoesView");
   private _mensagemView = new MensagemView("#mensagemView");
+  private _service = new NegociacaoService();
 
   constructor() {
     this._negociacoesView.update(this._negociacoes);
@@ -32,31 +35,38 @@ export class NegociacaoController {
     );
 
     this._negociacoes.adiciona(negociacao);
+
+    imprime(negociacao, this._negociacoes);
+
     this._negociacoesView.update(this._negociacoes);
     this._mensagemView.update("Negociação adicionada com sucesso");
   }
 
   @throttle()
-  importaDados() {
-    function isOk(res: Response) {
+  async importaDados() {
+    const isOk: HandlerFunction = (res: Response) => {
       if (res.ok) {
         return res;
       } else {
         throw new Error(res.statusText);
       }
+    };
+
+    try {
+      const negociacoesParaImportar = await this._service.obterNegociacoes(isOk);
+      const negociacoesImportadas = this._negociacoes.paraArray();
+
+      negociacoesParaImportar
+        .filter(
+          negociacao =>
+            !negociacoesImportadas.some(importada => negociacao.ehIgual(importada))
+        )
+        .forEach(negociacao => this._negociacoes.adiciona(negociacao));
+
+      this._negociacoesView.update(this._negociacoes);
+    } catch (error) {
+      this._mensagemView.update(error.message);
     }
-
-    fetch("http://localhost:8080/dados")
-      .then(res => isOk(res))
-      .then(res => res.json())
-      .then((dados: NegociacaoParcial[]) => {
-        dados
-          .map(dado => new Negociacao(new Date(), dado.vezes, dado.montante))
-          .forEach(negociacao => this._negociacoes.adiciona(negociacao));
-
-        this._negociacoesView.update(this._negociacoes);
-      })
-      .catch(err => console.error(err.message));
   }
 
   private _ehDiaUtil(data: Date) {
